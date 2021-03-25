@@ -27,18 +27,32 @@ import "./Board.css";
  *
  **/
 
-function Board({ nrows, ncols, chanceLightStartsOn }) {
+function Board({ nrows=3, ncols=3, chanceLightStartsOn= 0.5 }) {
+  
   const [board, setBoard] = useState(createBoard());
-
+  
   /** create a board nrows high/ncols wide, each cell randomly lit or unlit */
   function createBoard() {
+    
+    // const chanceLight = () => Math.random() < chanceLightStartsOn;
     let initialBoard = [];
     // TODO: create array-of-arrays of true/false values
+    // const matrix = new Array(nrows).fill(chanceLight).map(() => new Array(ncols).fill(chanceLight))
+    // initialBoard.push(matrix)
+    for(let i = 0; i < nrows; i++){
+      let row = []
+      for(let y = 0; y < ncols; y++){
+        row.push(Math.random() < chanceLightStartsOn)
+      }
+      initialBoard.push(row)
+    }
     return initialBoard;
   }
 
   function hasWon() {
+    debugger
     // TODO: check the board in state to determine whether the player has won.
+    return board.every(row => row.every(cell => !cell))
   }
 
   function flipCellsAround(coord) {
@@ -54,24 +68,52 @@ function Board({ nrows, ncols, chanceLightStartsOn }) {
       };
 
       // TODO: Make a (deep) copy of the oldBoard
+      const boardCopy = oldBoard.map(row => [...row])
 
       // TODO: in the copy, flip this cell and the cells around it
+      flipCell(y,x, boardCopy)
+      flipCell(y,x - 1, boardCopy)
+      flipCell(y,x + 1, boardCopy)
+      flipCell(y - 1, x, boardCopy)
+      flipCell(y + 1, x, boardCopy)
 
       // TODO: return the copy
+      return boardCopy
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
-
+  if(hasWon()){
+    return <div>You Win!</div>
+  }
   // TODO
 
   // make table board
 
   // TODO
+  let tableBoard = []
+
+  for(let y = 0; y < nrows; y++){
+    let row = []
+    for(let x = 0; x < ncols; x++){
+      let coordinates = `${y}-${x}`
+      row.push(
+        <Cell
+          key={coordinates}
+          isLit={board[y][x]}
+          flipCellsAroundMe={() => flipCellsAround(coordinates)}
+        />
+      )
+    }
+    tableBoard.push(<tr key={y}>{row}</tr>)
+    console.log(tableBoard)
+  }
+   
   return (
-    <div>
-      <h1>Test</h1>
-    </div>
+    
+    <table className="Board">
+      <tbody>{tableBoard}</tbody>
+    </table>
   )
 }
 
