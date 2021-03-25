@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Cell /> rendering  matches snapshot when lit 1`] = `
+<DocumentFragment>
+  <td
+    class="Cell Cell-lit"
+    role="button"
+  />
+</DocumentFragment>
+`;
